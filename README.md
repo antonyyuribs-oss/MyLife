@@ -1,60 +1,20 @@
-# MyLife — notas e listas pessoais
+# MyLife 1.4 — Importação JSON + Markdown
 
-Aplicativo web instalável para iPhone (PWA), inspirado na interface e nos princípios de simplicidade do Rastro.
+**Atualização:** substitua os arquivos na raiz do repositório GitHub Pages. Não desinstale o aplicativo nem apague dados do Safari antes de exportar um backup JSON.
 
-## Publicar no GitHub Pages
+## Importação: um único botão
 
-1. Crie um repositório chamado `MyLife` no GitHub.
-2. Envie **todos os arquivos desta pasta** para a raiz do repositório (não apenas `index.html`).
-3. Abra **Settings → Pages → Build and deployment**; escolha `Deploy from a branch`, `main` e pasta `/ (root)`.
-4. Abra o endereço publicado em **Safari** no iPhone e use **Compartilhar → Adicionar à Tela de Início**.
+Em **Dados → Importar notas (JSON ou Markdown)**, selecione um ou mais arquivos `.json`, `.md` ou `.markdown`. O formato é reconhecido pela extensão e cada arquivo Markdown é convertido em **uma nota completa editável**, com título da primeira linha `# ...` ou, na ausência dela, o nome do arquivo. A nota chega **não fixada** por padrão; abra-a e fixe se desejar.
 
-O aplicativo também abre como `index.html` no computador, mas o funcionamento offline instalável exige HTTPS (como GitHub Pages).
+Os arquivos Markdown podem conter parágrafos, títulos, negrito, itálico, destaque, tachado, sublinhado em HTML, links HTTPS, listas comuns/numeradas com até 4 recuos, checklists marcados ou pendentes, tabelas simples, citações, código, divisórias e imagens/arquivos incorporados como Data URL. O aplicativo mostra o total encontrado e pergunta se deve **adicionar** ou **substituir**. Em caso de erro, nenhum arquivo do lote é aplicado.
 
-## Funcionalidades
+**Importante:** imagens e PDFs referenciados no Markdown por nomes/caminhos (`![foto](foto.png)`) não são incorporados automaticamente, pois o arquivo Markdown não contém suas bytes. O MyLife conserva uma indicação da referência e avisa na confirmação. Guarde essas imagens em Fotos/Arquivos e adicione-as à nota usando o editor, ou converta tudo para um backup JSON com mídia incorporada. Referências HTTP externas também não são baixadas automaticamente.
 
-- Abertura mostrando apenas **notas fixadas**; toque no cartão para abrir/editar com salvamento automático.
-- Criação de nota textual ou lista de verificação; ícone/emoji e título editáveis.
-- Fixar/desafixar, duplicar, arquivar, excluir, buscar, filtrar e ordenar cartões fixados.
-- Temas: Nude, Rosé, Lavanda, Vinho, Preto clássico, Creme e Azul acinzentado.
-- Layout de cartões confortável/compacto e três tamanhos de texto.
-- Exportação/importação de backup JSON. Importação permite adicionar ou substituir, com confirmação.
-- Dados locais no navegador do dispositivo, sem conta ou conexão com servidor.
+## Exportação
 
-**Importante:** faça backups JSON regulares. Navegador, aparelho ou domínio diferentes não compartilham automaticamente os mesmos dados locais. O MyLife não lê diretamente o Apple Notes/iCloud. Peça ao ChatGPT para converter os textos/checklists existentes para o JSON de importação.
+- **Dados → Exportar todas as notas (JSON)** cria backup integral com dados e mídias incorporadas. É o formato recomendado para segurança.
+- **Abra uma nota → Mais (⋯) → Exportar esta nota (Markdown)** cria um arquivo `.md` editável. Fotos/arquivos incorporados em Data URL podem tornar o Markdown muito grande e a aceitação desses dados varia entre aplicativos; use JSON para backups.
 
-## Formato JSON de importação
+## Compatibilidade e limites
 
-O MyLife aceita arquivos que contenham `{"notes":[...]}`. Os campos mínimos são `title` e `content` (nota de texto) ou `title`, `type:"checklist"` e `items` (checklist). Para aparecer na tela inicial, inclua `"pinned":true`.
-
-```json
-{
-  "app": "MyLife",
-  "version": 1,
-  "notes": [
-    {
-      "title": "Rotina de Ouro",
-      "emoji": "⚜️",
-      "type": "text",
-      "content": "05:30 — Devocional\n06:40 — Correr",
-      "pinned": true
-    },
-    {
-      "title": "Itens para comprar",
-      "emoji": "📌",
-      "type": "checklist",
-      "pinned": true,
-      "items": [
-        {"text": "Carregador", "done": true},
-        {"text": "Purificador de água", "done": false}
-      ]
-    }
-  ]
-}
-```
-
-### Limitações previstas
-
-- Notas de texto aceitam quebras de linha, mas **não preservam nativamente** todas as tabelas, imagens, anexos e estilos do Apple Notes.
-- A importação é manual por arquivo JSON; não há sincronização com o iCloud.
-- Os dados são armazenados no `localStorage`; para volumes grandes ou imagens/anexos seria necessário migrar para IndexedDB.
+A versão 1.4 preserva a mesma estrutura local IndexedDB (`mylife_data_v2`) e os mesmos campos das notas 1.3.1 e anteriores. A importação JSON continua compatível com os formatos legados. Até 100 arquivos por vez, total máximo 180 MB; Markdown até 10 MB por arquivo, 600 blocos por nota; até 250 imagens e 80 anexos por nota. O arquivo não contém mecanismo de sincronização com iCloud ou com o Notas da Apple. O aplicativo armazena conteúdo localmente no navegador. Teste a restauração em aparelho separado antes de apagar originais.
